@@ -96,7 +96,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   and the following is a good resource for the actual equation to implement (look at equation
 	//   3.33
 	//   http://planning.cs.uiuc.edu/node99.html
-	double sum = 0;
 	weights.clear();
 	auto gauss_norm = (1 / (2 * M_PI * std_landmark[0] * std_landmark[1]));
 	std::array<double, 2> denominator =
@@ -132,7 +131,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			}
       if(!nearest_map)
       {
-        std::cout << "nearest_map null" << std::endl;
         continue;
       }
 			auto x_map = position.first;
@@ -147,19 +145,12 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 		}
     if(associations.empty())
     {
-      std::cout << "associations empty" << std::endl;
       continue;
     }
       
 		SetAssociations(p, associations, sense_x, sense_y);
 		p.weight = weight;
-		sum += weight;
 		weights.push_back(p.weight);
-	}
-	if (sum == 0)
-	{
-		std::cout << "sum = 0" << std::endl;
-		std::cout << "particles size = " << particles.size() << std::endl;
 	}
 }
 
@@ -171,7 +162,6 @@ void ParticleFilter::resample()
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::discrete_distribution<> d(std::begin(weights), std::end(weights));
-	std::map<int, int> m;
 	std::vector<Particle> particles_new;
 	for (auto i = 0; i < weights.size(); ++i)
 	{
